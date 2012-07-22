@@ -20,6 +20,7 @@ kmap=$3
 vmlinuz=/boot/vmlinuz-$kver
 sysmap=/boot/System.map-$kver
 kconfig=/boot/kconfig-$kver
+initramfs=/boot/initramfs-$kver.img
  
  
 #
@@ -36,6 +37,8 @@ if [ -f $kconfig ]; then cp $kconfig $kconfig.old; fi
 cat $kimg > $vmlinuz
 cp $kmap $sysmap
 cp $(dirname "$kmap")/.config $kconfig
+
+mkinitcpio -v -g $initramfs -k $kver
  
  
 #
@@ -62,6 +65,7 @@ if [ -f $grub_menu ] && [ -f $grub_update_conf ]; then
         echo "title linux $kver"                            >> $grub_menu
         echo "root $grub_root_loc"                          >> $grub_menu
         echo "kernel $grub_boot_loc/vmlinuz-$kver $kopts"   >> $grub_menu
+	echo "initrd $grub_boot_loc/initramfs-$kver.img"    >> $grub_menu
         echo                                                >> $grub_menu
  
     fi
